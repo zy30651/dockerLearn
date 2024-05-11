@@ -22,8 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o6i@%dubgqmo+5uatjwp%y-)*kcx##05rkg-h6ii0t*@@37-0='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
+# ALLOWED_HOSTS = ['your_server_IP', 'your_domain_name']
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -72,10 +73,33 @@ WSGI_APPLICATION = 'djangoDocker1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+# 设置数据库。这里用户名和密码必需和docker-compose.yml里mysql环境变量保持一致
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'djangoDocker1',  # 数据库名
+        'USER': 'zy30651',  # 你设置的用户名 - 非root用户
+        'PASSWORD': '19861026zy',  # # 换成你自己密码
+        'HOST': 'db',  # 注意：这里使用的是db别名，docker会自动解析成ip
+        'PORT': '3306',  # 端口
+    }
+}
+
+# 设置redis缓存。这里密码为redis.conf里设置的密码
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",  # 这里直接使用redis别名作为host ip地址
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "19861026zy",  # 换成你自己密码
+        },
     }
 }
 

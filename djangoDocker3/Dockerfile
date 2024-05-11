@@ -18,8 +18,18 @@ WORKDIR /var/www/html/djangoDocker1
 # 将当前目录文件加入到容器工作目录中（. 表示当前宿主机目录）
 ADD . /var/www/html/djangoDocker1
 
+ # 更新pip版本
+RUN /usr/local/bin/python -m pip install --upgrade pip
+
 # 利用 pip 安装依赖
 # Windows环境下编写的start.sh每行命令结尾有多余的\r字符，需移除。
-RUN pip install -r requirements.txt && \
-    sed -i 's/\r//' ./start.sh && \
-    chmod +x ./start.sh
+# 利用 pip 安装依赖
+RUN pip install -r requirements.txt
+
+# 去除windows系统编辑文件中多余的\r回车空格
+RUN sed -i 's/\r//' ./start.sh
+
+# 给start.sh可执行权限
+RUN chmod -R 777 ./start.sh
+#   Unknown server host 'db'，疑似要关联db；所以报错
+#RUN ./start.sh
